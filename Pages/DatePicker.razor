@@ -1,0 +1,22 @@
+@page "/DatePicker"
+@dayDate
+@day
+@month
+@year
+
+
+@code {
+    private DateTime date = DateTime.Today;
+    private int dayDate;
+    private string day;
+    private string month;
+    private int year;
+    protected override void OnInitialized()
+    {
+        base.OnInitialized(); // Retains the original methods
+        dayDate = date.Day;
+        day = date.ToString("dddd");
+        month = date.ToString("MMM");
+        year = date.Year;
+    }
+}
