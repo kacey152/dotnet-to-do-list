@@ -1,0 +1,43 @@
+@page "/DateSelector"
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-1">
+           <div>
+                <span class="fw-bold" id="dayDate">@dayDate</span>
+            </div>
+        </div>
+        <div class="col-md-2 container">
+            <div>
+                <span id="day">@day</span>
+            </div>
+            <div>
+                <span id="month">@month</span>
+                <span id="year">@year</span>
+            </div>
+        </div>
+        <div class="col-md-9 container">
+        </div>
+    </div>
+</div>
+
+<style>
+    #dayDate {
+        font-size: 2.5em;
+    }
+</style>
+
+@code {
+    private DateTime date = DateTime.Today;
+    private int dayDate;
+    private string day;
+    private string month;
+    private int year;
+    protected override void OnInitialized()
+    {
+        base.OnInitialized(); // Retains the original methods
+        dayDate = date.Day;
+        day = date.ToString("dddd");
+        month = date.ToString("MMM");
+        year = date.Year;
+    }
+}
