@@ -1,7 +1,7 @@
 @page "/DateSelector"
 <div class="bg-gradient-purple text-white">
     <div class="container">
-        <div class="row my-5">
+        <div class="row py-5">
             <div class="col-md-1">
                 <div class="text-end">
                     <span class="fw-bold" id="dayDate">@dayDate</span>
@@ -19,7 +19,9 @@
             <div class="col-md-9 container">
             </div>
         </div>
-        <DaySelector SelectedDate="@selectedDate" />
+        <div class="py-5">
+            <DaySelector SelectedDate="@selectedDate" SelectedDateChanged="HandleDateChange"/>
+        </div>
     </div>
 </div>
 
@@ -36,15 +38,25 @@
 @code {
     private DateTime selectedDate = DateTime.Today;
     private int dayDate;
-    private string day;
-    private string month;
+    private string? day;
+    private string? month;
     private int year;
+
     protected override void OnInitialized()
     {
         base.OnInitialized(); // Retains the original methods
+        UpdateDateValues();
+    }
+    
+        private void UpdateDateValues()
+    {
         dayDate = selectedDate.Day;
         day = selectedDate.ToString("dddd");
         month = selectedDate.ToString("MMM");
         year = selectedDate.Year;
+    }
+    private void HandleDateChange(DateTime newDate){
+        selectedDate = newDate;
+        UpdateDateValues();
     }
 }

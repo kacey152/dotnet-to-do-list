@@ -2,10 +2,10 @@
     <div class="row">
         @foreach (int day in Enumerable.Range(0, 7)){
             // Loop through each day of the week
-            DateTime current = SelectedDate.AddDays(-(int)SelectedDate.DayOfWeek + 1 + day);
+            DateTime current = SelectedDate.AddDays(-(int)SelectedDate.DayOfWeek + day);
             <div class="col d-flex flex-column justify-content-center text-center">
                 <div>@current.ToString("ddd").ToUpper()</div>
-                <div>@current.Day</div>
+                <div @onclick="()=>HandleSelectDate(current)">@current.Day</div>
             </div>
         }
     </div>
@@ -13,4 +13,10 @@
 @code {
     [Parameter]
     public DateTime SelectedDate { get; set; }
+    [Parameter]
+    public EventCallback<DateTime> SelectedDateChanged {get; set;}
+    private async Task HandleSelectDate(DateTime current) {
+        SelectedDate = current;
+        await SelectedDateChanged.InvokeAsync(current);
+    }
 }
