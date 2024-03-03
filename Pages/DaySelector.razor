@@ -1,21 +1,42 @@
 <div class="container">
     <div class="row">
-        @foreach (int day in Enumerable.Range(0, 7)){
+        @foreach (int day in Enumerable.Range(0, 7))
+        {
             // Loop through each day of the week
             DateTime current = SelectedDate.AddDays(-(int)SelectedDate.DayOfWeek + day);
+            string selectedStyle = current == SelectedDate ? "selected" : "";
             <div class="col d-flex flex-column justify-content-center text-center">
                 <div>@current.ToString("ddd").ToUpper()</div>
-                <div @onclick="()=>HandleSelectDate(current)">@current.Day</div>
+                <div class="d-flex justify-content-center pt-2" @onclick="()=>HandleSelectDate(current)">
+                    <div class="@selectedStyle cursor-pointer">@current.Day</div>
+                </div>
             </div>
         }
     </div>
 </div>
+
+<style>
+    .selected {
+        aspect-ratio: 1 / 1;
+        height: 100%;
+        border-radius: 50%;
+        background-color: white;
+        color: purple;
+
+    }
+
+    .cursor-pointer {
+        cursor: pointer;
+    }
+</style>
+
 @code {
     [Parameter]
     public DateTime SelectedDate { get; set; }
     [Parameter]
-    public EventCallback<DateTime> SelectedDateChanged {get; set;}
-    private async Task HandleSelectDate(DateTime current) {
+    public EventCallback<DateTime> SelectedDateChanged { get; set; }
+    private async Task HandleSelectDate(DateTime current)
+    {
         SelectedDate = current;
         await SelectedDateChanged.InvokeAsync(current);
     }
