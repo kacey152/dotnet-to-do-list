@@ -7,6 +7,7 @@ obj/
 *.userosscache
 *.suo
 *.userprefs
+*.env
 
 # Visual Studio and Rider files
 .vscode/
@@ -18,3 +19,4 @@ obj/
 *.pdb
 *.log
 *.zip
+

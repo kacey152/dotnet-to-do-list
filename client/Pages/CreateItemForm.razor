@@ -41,15 +41,17 @@
         public TimeOnly Time { get; set; }
         public string? Category { get; set; }
         public bool RemindEnabled { get; set; }
-        public string? Description { get; set;}
+        public string? Description { get; set; }
     }
-private void Submit()
-{
-    Console.WriteLine($"Date = {newItemModel.Date}, " +
-                      $"Time = {newItemModel.Time}, " +
-                      $"Category = {newItemModel.Category}, " +
-                      $"RemindEnabled = {newItemModel.RemindEnabled}, " +
-                      $"Description = {newItemModel.Description}");
-}
+    private void Submit()
+    {
+        DateTime combinedDate = new DateTime(
+            newItemModel.Date.Year, newItemModel.Date.Month, newItemModel.Date.Day,
+            newItemModel.Time.Hour, newItemModel.Time.Minute, newItemModel.Time.Second);
+        Console.WriteLine($"Date = {combinedDate}, " +
+        $"Category = {newItemModel.Category}, " +
+        $"RemindEnabled = {newItemModel.RemindEnabled}, " +
+        $"Description = {newItemModel.Description}");
+    }
 
 }
