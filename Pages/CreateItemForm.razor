@@ -1,0 +1,55 @@
+@page "/CreateItemForm"
+
+<div class="container">
+    <EditForm Model="@newItemModel" OnValidSubmit="Submit">
+        <div>New Activity</div>
+        <div class="form-group mb-3">
+            <InputDate class="form-control" @bind-Value="newItemModel.Date" />
+        </div>
+        <div class="form-group mb-3">
+            <InputDate class="form-control" Type="InputDateType.Time" @bind-Value="@newItemModel.Time" />
+        </div>
+        <div class="input-group mb-3">
+            <span class="input-group-text">Category</span>
+            <InputSelect class="form-select" @bind-Value="newItemModel.Category">
+                <option value="shopping">Shopping</option>
+                <option value="work">Work</option>
+                <option value="hobby">Hobby</option>
+                <option value="chores">Chores</option>
+                <option value="others">Others</option>
+            </InputSelect>
+        </div>
+        <div class="form-check form-switch mb-3">
+            <label class="form-check-label" for="flexSwitchCheckDefault">Remind</label>
+            <InputCheckbox class="form-check-input" @bind-Value="newItemModel.RemindEnabled" role="switch"
+                id="flexSwitchCheckDefault" />
+        </div>
+        <div>
+            <InputText type="text" @bind-Value="newItemModel.Description" class="form-control mb-3"
+                placeholder="Brief Description" />
+        </div>
+        <button type="submit" class="btn btn-success mb-3">Submit</button>
+    </EditForm>
+</div>
+
+@code {
+    private NewItemModel newItemModel = new NewItemModel();
+
+    public class NewItemModel
+    {
+        public DateOnly Date { get; set; }
+        public TimeOnly Time { get; set; }
+        public string? Category { get; set; }
+        public bool RemindEnabled { get; set; }
+        public string? Description { get; set;}
+    }
+private void Submit()
+{
+    Console.WriteLine($"Date = {newItemModel.Date}, " +
+                      $"Time = {newItemModel.Time}, " +
+                      $"Category = {newItemModel.Category}, " +
+                      $"RemindEnabled = {newItemModel.RemindEnabled}, " +
+                      $"Description = {newItemModel.Description}");
+}
+
+}
