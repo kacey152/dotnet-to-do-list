@@ -1,0 +1,55 @@
+@using System.Text.Json;
+
+<div>
+    @if (todoItems != null)
+    {
+        @foreach (var item in todoItems)
+        {
+            <div>@item.date.ToLocalTime()</div>
+            <div>@item.category</div>
+            <div>@item.description</div>
+            <div>@item.remindEnabled</div>
+        }
+    }
+    else
+    {
+        <p>Loading...</p>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public DateTime SelectedDate { get; set; }
+    public class TodoItem
+    {
+        public string? id { get; set; }
+        public DateTime date { get; set; }
+        public string? category { get; set; }
+        public bool remindEnabled { get; set; }
+        public string? description { get; set; }
+    }
+    private List<TodoItem> todoItems;
+    protected override async Task OnParametersSetAsync()
+    {
+        await GetAsync(sharedClient);
+    }
+    private static HttpClient sharedClient = new()
+        {
+            BaseAddress = new Uri("http://localhost:5172"),
+        };
+
+    async Task GetAsync(HttpClient httpClient)
+    {
+        // Format the selected date as yyyy-MM-dd to match the format in the database
+        string formattedDate = SelectedDate.ToString("yyyy-MM-dd");
+
+        // Construct the query string with the date filter
+        string queryString = $"date={formattedDate}";
+
+        using HttpResponseMessage response = await httpClient.GetAsync($"todoitems/{formattedDate}");
+
+        var jsonResponse = await response.Content.ReadAsStringAsync();
+        todoItems = JsonSerializer.Deserialize<List<TodoItem>>(jsonResponse);
+
+    }
+}

@@ -37,4 +37,21 @@ app.MapPost("/todoitems", async (TodoItem todoItem, IMongoDatabase mongoDatabase
     await collection.InsertOneAsync(todoItem);
     return Results.Created($"/todoitems/{todoItem.Id}", todoItem);
 });
+app.MapGet("/todoitems/{date}", async (DateTime date, IMongoDatabase mongoDatabase) =>
+{
+    var collection = mongoDatabase.GetCollection<TodoItem>("todoitems");
+    var filterBuilder = Builders<TodoItem>.Filter;
+    var filter = filterBuilder.Empty; // Default filter
+    DateTime startDate = date.Date;
+    DateTime endDate = startDate.AddDays(1);
+    filter = filterBuilder.And(
+               filter,
+               filterBuilder.Gte(item => item.Date, startDate),
+               filterBuilder.Lt(item => item.Date, endDate)
+           );
+    var todoItems = await collection.Find(filter).ToListAsync();
+    return Results.Ok(todoItems);
+
+}
+);
 app.Run();

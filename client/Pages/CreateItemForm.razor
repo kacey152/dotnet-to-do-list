@@ -64,12 +64,16 @@
 
     static async Task PostAsync(NewItemModel newItemModel, HttpClient httpClient)
     {
+        DateTime combinedDate = new DateTime(
+        newItemModel.Date.Year, newItemModel.Date.Month, newItemModel.Date.Day,
+        newItemModel.Time.Hour, newItemModel.Time.Minute, newItemModel.Time.Second);
+        
         using StringContent jsonContent = new(
         JsonSerializer.Serialize(new
         {
-            date = newItemModel.Date,
+            date = combinedDate,
             category = newItemModel.Category,
-            remindeEnabled = newItemModel.RemindEnabled,
+            remindEnabled = newItemModel.RemindEnabled,
             description = newItemModel.Description,
         }),
         Encoding.UTF8,
