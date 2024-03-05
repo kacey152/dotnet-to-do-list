@@ -4,6 +4,16 @@ using dotenv.net;
 DotEnv.Load();
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowSpecificOrigins",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:5217")
+            .AllowAnyHeader();
+        });
+});
+
 var connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
 var databaseName = Environment.GetEnvironmentVariable("DB_NAME");
 
@@ -18,6 +28,8 @@ var mongoDatabase = mongoClient.GetDatabase(databaseName);
 
 builder.Services.AddSingleton<IMongoDatabase>(mongoDatabase);
 var app = builder.Build();
+app.UseCors("AllowSpecificOrigins");
+
 
 app.MapPost("/todoitems", async (TodoItem todoItem, IMongoDatabase mongoDatabase) =>
 {
