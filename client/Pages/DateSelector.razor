@@ -4,28 +4,35 @@
         <div class="row py-3">
             <div class="col-sm-1">
                 <div class="text-end">
-                    <span class="fw-bold" id="dayDate">@dayDate</span>
+                    <span class="fw-bold" id="dayDate">@selectedDate.Day</span>
                 </div>
             </div>
             <div class="col-sm-2 d-flex flex-column justify-content-center">
                 <div>
-                    <span id="day">@day</span>
+                    <span id="day">@selectedDate.ToString("dddd")</span>
                 </div>
                 <div>
-                    <span id="month">@month</span>
-                    <span id="year">@year</span>
+                    <span id="month">@selectedDate.ToString("MMM")</span>
+                    <span id="year">@selectedDate.Year</span>
                 </div>
             </div>
-            <div class="col-sm-9">
+            <div class="col-sm-4 d-flex justify-content-between align-items-center">
+                <button class="btn btn-outline-light" @onclick="()=>showCalendar = !showCalendar">
+                    <i class="bi bi-calendar"></i> Change Date
+                </button>
+                @if (showCalendar)
+                {
+                    <InputDate @bind-Value="selectedDate" />
+                }
             </div>
         </div>
         <div class="py-3">
-            <DaySelector SelectedDate="@selectedDate" SelectedDateChanged="HandleDateChange"/>
+            <DaySelector SelectedDate="@selectedDate" SelectedDateChanged="HandleDateChange" />
         </div>
     </div>
 </div>
 
-<ToDoItems SelectedDate="@selectedDate"/>
+<ToDoItems SelectedDate="@selectedDate" />
 
 <style>
     #dayDate {
@@ -39,26 +46,11 @@
 
 @code {
     private DateTime selectedDate = DateTime.Today;
-    private int dayDate;
-    private string? day;
-    private string? month;
-    private int year;
+    private bool showCalendar = false;
 
-    protected override void OnInitialized()
-    {
-        base.OnInitialized(); // Retains the original methods
-        UpdateDateValues();
-    }
     
-        private void UpdateDateValues()
+    private void HandleDateChange(DateTime newDate)
     {
-        dayDate = selectedDate.Day;
-        day = selectedDate.ToString("dddd");
-        month = selectedDate.ToString("MMM");
-        year = selectedDate.Year;
-    }
-    private void HandleDateChange(DateTime newDate){
         selectedDate = newDate;
-        UpdateDateValues();
     }
 }
