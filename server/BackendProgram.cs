@@ -1,6 +1,7 @@
 using MongoDB.Driver;
 using Server.Models;
 using dotenv.net;
+using MongoDB.Bson;
 DotEnv.Load();
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,7 +11,8 @@ builder.Services.AddCors(options =>
         policy =>
         {
             policy.WithOrigins("http://localhost:5217")
-            .AllowAnyHeader();
+            .AllowAnyHeader()
+            .AllowAnyMethod();
         });
 });
 
@@ -52,6 +54,12 @@ app.MapGet("/todoitems/{date}", async (DateTime date, IMongoDatabase mongoDataba
     var todoItems = await collection.Find(filter).ToListAsync();
     return Results.Ok(todoItems);
 
-}
-);
+});
+app.MapDelete("/todoitems/{id}", async (string id, IMongoDatabase mongoDatabase) =>
+{
+    var collection = mongoDatabase.GetCollection<TodoItem>("todoitems");
+    var filter = Builders<TodoItem>.Filter.Eq("_id", new ObjectId(id));
+    await collection.DeleteOneAsync(filter);
+    return Results.Ok();
+});
 app.Run();

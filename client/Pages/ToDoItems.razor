@@ -5,7 +5,7 @@
     {
         @foreach (var item in todoItems)
         {
-            <div class="row justify-content-center">
+            <div class="row col-sm-11 justify-content-center">
                 <div class="col-sm-6 border p-3 rounded">
                     <div class="row mb-2">
                         <div class="col-6 font-weight-bold">Time:</div>
@@ -20,6 +20,17 @@
                         <div class="col-6">@item.description</div>
                     </div>
                 </div>
+                <div class="col-sm-1 d-flex flex-column justify-content-center align-items-center">
+                    <div>
+                        <button class="btn btn-danger" @onclick="()=>DeleteAsync(item.id, sharedClient)">Delete</button>
+                    </div>
+                    <div>
+                        @* <button class="btn btn-primary mt-1" @onclick="()=>EditItem(item.id)">Edit</button> *@
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-1">
+
             </div>
         }
     }
@@ -40,7 +51,7 @@
         public bool remindEnabled { get; set; }
         public string? description { get; set; }
     }
-    private List<TodoItem> todoItems;
+    private List<TodoItem>? todoItems;
     protected override async Task OnParametersSetAsync()
     {
         await GetAsync(sharedClient);
@@ -62,6 +73,26 @@
 
         var jsonResponse = await response.Content.ReadAsStringAsync();
         todoItems = JsonSerializer.Deserialize<List<TodoItem>>(jsonResponse);
+    }
 
+    async Task DeleteAsync(string itemId, HttpClient httpClient)
+    {
+        try
+        {
+            string uri = $"todoitems/{itemId}";
+            HttpResponseMessage response = await sharedClient.DeleteAsync(uri);
+            if (response.IsSuccessStatusCode)
+            {
+                todoItems?.RemoveAll(item => item.id == itemId);
+            }
+            else
+            {
+                Console.WriteLine($"Failed to delete item. Status code: {response.StatusCode}");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"An error occurred while deleting item: {ex.Message}");
+        }
     }
 }
