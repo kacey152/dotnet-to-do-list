@@ -27,10 +27,10 @@
                         <button class="btn btn-primary mt-1" @onclick="()=>item.isEditing = !item.isEditing">
                             <i class="bi bi-pencil"></i></button>
                     </div>
-                    @if (item.isEditing)
+                    @if (item.isEditing && item.id != null)
                     {
                         <div>
-                            <button class="btn btn-danger" @onclick="()=>DeleteAsync(item?.id, sharedClient)">Delete</button>
+                            <button class="btn btn-danger" @onclick="()=>DeleteAsync(item.id, sharedClient)">Delete</button>
                         </div>
                     }
                 </div>
@@ -80,6 +80,7 @@
 
         var jsonResponse = await response.Content.ReadAsStringAsync();
         todoItems = JsonSerializer.Deserialize<List<TodoItem>>(jsonResponse);
+        todoItems = todoItems?.OrderBy(item => item.date).ToList();
     }
 
     async Task DeleteAsync(string itemId, HttpClient httpClient)
