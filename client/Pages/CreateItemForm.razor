@@ -1,4 +1,5 @@
 @page "/CreateItemForm"
+@inject NavigationManager NavigationManager
 @using System.Text.Json;
 @using System.Text;
 
@@ -14,11 +15,12 @@
         <div class="input-group mb-3">
             <span class="input-group-text">Category</span>
             <InputSelect class="form-select" @bind-Value="newItemModel.Category">
-                <option value="shopping">Shopping</option>
-                <option value="work">Work</option>
-                <option value="hobby">Hobby</option>
-                <option value="chores">Chores</option>
-                <option value="others">Others</option>
+                <option value="">Please select a Category</option>
+                <option value="Shopping">Shopping</option>
+                <option value="Work">Work</option>
+                <option value="Hobby">Hobby</option>
+                <option value="Chores">Chores</option>
+                <option value="Others">Others</option>
             </InputSelect>
         </div>
         <div class="form-check form-switch mb-3">
@@ -35,7 +37,11 @@
 </div>
 
 @code {
-    private NewItemModel newItemModel = new NewItemModel();
+    private NewItemModel newItemModel = new NewItemModel()
+        {
+            Date = DateOnly.FromDateTime(DateTime.Today),
+            Time = TimeOnly.FromTimeSpan(DateTime.Now.TimeOfDay)
+        };
 
     public class NewItemModel
     {
@@ -55,6 +61,7 @@
         $"RemindEnabled = {newItemModel.RemindEnabled}, " +
         $"Description = {newItemModel.Description}");
         await PostAsync(newItemModel, sharedClient);
+        NavigationManager.NavigateTo("/");
     }
 
     private static HttpClient sharedClient = new()
@@ -67,7 +74,7 @@
         DateTime combinedDate = new DateTime(
         newItemModel.Date.Year, newItemModel.Date.Month, newItemModel.Date.Day,
         newItemModel.Time.Hour, newItemModel.Time.Minute, newItemModel.Time.Second);
-        
+
         using StringContent jsonContent = new(
         JsonSerializer.Serialize(new
         {
