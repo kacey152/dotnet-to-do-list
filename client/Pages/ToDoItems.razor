@@ -1,5 +1,6 @@
 @using System.Text.Json;
 
+
 <div class="container fs-5">
     @if (todoItems != null)
     {
@@ -21,12 +22,16 @@
                     </div>
                 </div>
                 <div class="col-sm-1 d-flex flex-column justify-content-center align-items-center">
-                    <div>
-                        <button class="btn btn-danger" @onclick="()=>DeleteAsync(item.id, sharedClient)">Delete</button>
+                    <div class="mb-2">
+                        <button class="btn btn-primary mt-1" @onclick="()=>item.isEditing = !item.isEditing">
+                            <i class="bi bi-pencil"></i></button>
                     </div>
-                    <div>
-                        @* <button class="btn btn-primary mt-1" @onclick="()=>EditItem(item.id)">Edit</button> *@
-                    </div>
+                    @if (item.isEditing)
+                    {
+                        <div>
+                            <button class="btn btn-danger" @onclick="()=>DeleteAsync(item.id, sharedClient)">Delete</button>
+                        </div>
+                    }
                 </div>
             </div>
             <div class="col-sm-1">
@@ -50,6 +55,7 @@
         public string? category { get; set; }
         public bool remindEnabled { get; set; }
         public string? description { get; set; }
+        public bool isEditing { get; set; }
     }
     private List<TodoItem>? todoItems;
     protected override async Task OnParametersSetAsync()
