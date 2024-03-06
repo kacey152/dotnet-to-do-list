@@ -32,7 +32,10 @@
             <InputText type="text" @bind-Value="newItemModel.Description" class="form-control mb-3"
                 placeholder="Brief Description" />
         </div>
-        <button type="submit" class="btn btn-success mb-3">Submit</button>
+        <div class="mb-3 d-flex justify-content-between">
+            <button type="submit" class="btn btn-success mb-3">Submit</button>
+            <button type="button" @onclick="NavigateToHome" class="btn btn-danger">Cancel</button>
+        </div>
     </EditForm>
 </div>
 
@@ -92,5 +95,8 @@
 
         var jsonResponse = await response.Content.ReadAsStringAsync();
         Console.WriteLine($"{jsonResponse}\n");
+    }
+    private void NavigateToHome(){
+        NavigationManager.NavigateTo("/");
     }
 }
