@@ -1,14 +1,26 @@
 @using System.Text.Json;
 
-<div>
+<div class="container">
     @if (todoItems != null)
     {
         @foreach (var item in todoItems)
         {
-            <div>@item.date.ToLocalTime()</div>
-            <div>@item.category</div>
-            <div>@item.description</div>
-            <div>@item.remindEnabled</div>
+            <div class="row justify-content-center">
+                <div class="col-sm-6 border p-3 rounded">
+                    <div class="row mb-2">
+                        <div class="col-6 font-weight-bold">Time:</div>
+                        <div class="col-6">@item.date.ToLocalTime().ToString("h:mm tt")</div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-6 font-weight-bold">Category:</div>
+                        <div class="col-6">@item.category</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6 font-weight-bold">Description:</div>
+                        <div class="col-6">@item.description</div>
+                    </div>
+                </div>
+            </div>
         }
     }
     else
