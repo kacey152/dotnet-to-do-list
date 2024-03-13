@@ -62,4 +62,26 @@ app.MapDelete("/todoitems/{id}", async (string id, IMongoDatabase mongoDatabase)
     await collection.DeleteOneAsync(filter);
     return Results.Ok();
 });
+app.MapPut("/todoitems/{id}", async (string id, TodoItem updatedItem, IMongoDatabase mongoDatabase) =>
+{
+    var collection = mongoDatabase.GetCollection<TodoItem>("todoitems");
+
+    var filter = Builders<TodoItem>.Filter.Eq("_id", new ObjectId(id));
+    var existingItem = await collection.Find(filter).FirstOrDefaultAsync();
+
+    if (existingItem == null)
+    {
+        return Results.NotFound();
+    }
+
+    existingItem.Date = updatedItem.Date;
+    existingItem.Category = updatedItem.Category;
+    // existingItem.RemindEnabled = updatedItem.RemindEnabled;
+    existingItem.Description = updatedItem.Description;
+
+    // Update the item in the database
+    var result = await collection.ReplaceOneAsync(filter, existingItem);
+
+    return Results.NoContent();
+});
 app.Run();

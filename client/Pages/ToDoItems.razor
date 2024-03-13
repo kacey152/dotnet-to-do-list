@@ -1,5 +1,7 @@
 @using System.Text.Json;
 @inject NavigationManager NavigationManager
+@using System.Text.Json;
+@using System.Text;
 
 
 <div class="container fs-5 d-flex flex-column justify-content-center align-items-center">
@@ -7,34 +9,81 @@
     {
         @foreach (var item in todoItems)
         {
-            <div class="row col-sm-8 justify-content-center mt-2 border rounded">
-                <div class="col-sm-6 p-3">
-                    <div class="row mb-2">
-                        <div class="col-6 font-weight-bold">Time:</div>
-                        <div class="col-6">@item.date.ToLocalTime().ToString("h:mm tt")</div>
+            @if (item.isEditing && item.id != null)
+            {
+
+                <EditForm Model="@item" OnValidSubmit="()=> Submit(item)"
+                    class="row col-sm-8 justify-content-center mt-2 border rounded">
+                    <div class="col-sm-8 p-3">
+                        <div class="row mb-2">
+                            <div class="col-sm-6 font-weight-bold">Date:</div>
+                            <div class="col-sm-6">
+                                <InputDate class="form-control" @bind-Value="item.dateValue" />
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-sm-6 font-weight-bold">Time:</div>
+                            <div class="col-sm-6">
+                                <InputDate class="form-control" Type="InputDateType.Time" @bind-Value="@item.timeValue" />
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-sm-6 font-weight-bold">Category:</div>
+                            <div class="col-sm-6">
+                                <InputSelect class="form-select" @bind-Value="item.category">
+                                    <option value="">Please select a Category</option>
+                                    <option value="Shopping">Shopping</option>
+                                    <option value="Work">Work</option>
+                                    <option value="Hobby">Hobby</option>
+                                    <option value="Chores">Chores</option>
+                                    <option value="Others">Others</option>
+                                </InputSelect>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6 font-weight-bold">Description:</div>
+                            <div class="col-sm-6">
+                                <InputText type="text" @bind-Value="item.description" class="form-control mb-3"
+                                    placeholder="Brief Description" />
+                            </div>
+                        </div>
                     </div>
-                    <div class="row mb-2">
-                        <div class="col-6 font-weight-bold">Category:</div>
-                        <div class="col-6">@item.category</div>
-                    </div>
-                    <div class="row">
-                        <div class="col-6 font-weight-bold">Description:</div>
-                        <div class="col-6">@item.description</div>
-                    </div>
-                </div>
-                <div class="col-sm-1 d-flex flex-column justify-content-center align-items-center">
-                    <div class="mb-2">
-                        <button class="btn btn-primary mt-1" @onclick="()=>item.isEditing = !item.isEditing">
-                            <i class="bi bi-pencil"></i></button>
-                    </div>
-                    @if (item.isEditing && item.id != null)
-                    {
+                    <div class="col-sm-4 d-flex flex-column justify-content-center align-items-center">
+                        <div class="mb-2">
+                            <button class="btn btn-primary mt-1" type="submit">
+                                <i class="bi bi-pencil"></i></button>
+                        </div>
                         <div>
                             <button class="btn btn-danger" @onclick="()=>DeleteAsync(item.id, sharedClient)">Delete</button>
                         </div>
-                    }
+                    </div>
+                </EditForm>
+            }
+            else
+            {
+                <div class="row col-sm-8 justify-content-center mt-2 border rounded">
+                    <div class="col-sm-6 p-3">
+                        <div class="row mb-2">
+                            <div class="col-6 font-weight-bold">Time:</div>
+                            <div class="col-6">@item.date.ToLocalTime().ToString("h:mm tt")</div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-6 font-weight-bold">Category:</div>
+                            <div class="col-6">@item.category</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 font-weight-bold">Description:</div>
+                            <div class="col-6">@item.description</div>
+                        </div>
+                    </div>
+                    <div class="col-sm-1 d-flex flex-column justify-content-center align-items-center">
+                        <div class="mb-2">
+                            <button class="btn btn-primary mt-1" @onclick="()=>item.isEditing = !item.isEditing">
+                                <i class="bi bi-pencil"></i></button>
+                        </div>
+                    </div>
                 </div>
-            </div>
+            }
         }
     }
     else
@@ -50,6 +99,23 @@
     {
         public string? id { get; set; }
         public DateTime date { get; set; }
+        public DateTime dateLocal
+        {
+            get => date.ToLocalTime(); // Convert to local time when accessed
+            set => date = value.ToUniversalTime();
+        }
+        public DateTime dateValue
+        {
+            get => dateLocal.Date;
+            set => dateLocal = new DateTime(value.Year, value.Month, value.Day, dateLocal.Hour, dateLocal.Minute,
+            dateLocal.Second);
+        }
+        public TimeOnly timeValue
+        {
+            get => TimeOnly.FromTimeSpan(dateLocal.TimeOfDay);
+            set => dateLocal = new DateTime(dateLocal.Year, dateLocal.Month, dateLocal.Day, value.Hour,
+            value.Minute, value.Second);
+        }
         public string? category { get; set; }
         public bool remindEnabled { get; set; }
         public string? description { get; set; }
@@ -79,7 +145,6 @@
         todoItems = JsonSerializer.Deserialize<List<TodoItem>>(jsonResponse);
         todoItems = todoItems?.OrderBy(item => item.date).ToList();
     }
-
     async Task DeleteAsync(string itemId, HttpClient httpClient)
     {
         try
@@ -99,5 +164,36 @@
         {
             Console.WriteLine($"An error occurred while deleting item: {ex.Message}");
         }
+    }
+    private async Task Submit(TodoItem item)
+    {
+        await PutAsync(item, sharedClient);
+        await GetAsync(sharedClient);
+        item.isEditing = !item.isEditing;
+    }
+
+    static async Task PutAsync(TodoItem item, HttpClient httpClient)
+    {
+
+        using StringContent jsonContent = new(
+        JsonSerializer.Serialize(new
+        {
+            id = item.id,
+            date = item.date,
+            category = item.category,
+            remindEnabled = item.remindEnabled,
+            description = item.description,
+        }),
+        Encoding.UTF8,
+        "application/json");
+
+        string uri = $"todoitems/{item.id}";
+        using HttpResponseMessage response = await httpClient.PutAsync(
+        uri,
+        jsonContent);
+
+        var jsonResponse = await response.Content.ReadAsStringAsync();
+        Console.WriteLine($"{jsonResponse}\n");
+        Console.WriteLine("hi");
     }
 }
