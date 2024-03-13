@@ -62,5 +62,5 @@ jobs:
         with:
           app-name: 'dotnet-todolist'
           slot-name: 'Production'
-          package: .
+          package: ./client
           
