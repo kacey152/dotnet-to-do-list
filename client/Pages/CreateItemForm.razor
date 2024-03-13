@@ -56,20 +56,13 @@
     }
     private async Task Submit()
     {
-        DateTime combinedDate = new DateTime(
-        newItemModel.Date.Year, newItemModel.Date.Month, newItemModel.Date.Day,
-        newItemModel.Time.Hour, newItemModel.Time.Minute, newItemModel.Time.Second);
-        Console.WriteLine($"Date = {combinedDate}, " +
-        $"Category = {newItemModel.Category}, " +
-        $"RemindEnabled = {newItemModel.RemindEnabled}, " +
-        $"Description = {newItemModel.Description}");
         await PostAsync(newItemModel, sharedClient);
         NavigationManager.NavigateTo("/");
     }
 
     private static HttpClient sharedClient = new()
         {
-            BaseAddress = new Uri("http://localhost:5172"),
+            BaseAddress = new Uri("dotnet-todolist-api.azurewebsites.net"),
         };
 
     static async Task PostAsync(NewItemModel newItemModel, HttpClient httpClient)

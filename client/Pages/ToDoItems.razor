@@ -128,7 +128,7 @@
     }
     private static HttpClient sharedClient = new()
         {
-            BaseAddress = new Uri("http://localhost:5172"),
+            BaseAddress = new Uri("dotnet-todolist-api.azurewebsites.net"),
         };
 
     async Task GetAsync(HttpClient httpClient)
