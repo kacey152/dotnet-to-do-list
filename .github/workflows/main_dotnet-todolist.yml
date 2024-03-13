@@ -23,6 +23,7 @@ jobs:
           include-prerelease: true
 
       - name: Build with dotnet
+        working-directory: ./client
         run: dotnet build --configuration Release
 
       - name: dotnet publish
@@ -62,5 +63,5 @@ jobs:
         with:
           app-name: 'dotnet-todolist'
           slot-name: 'Production'
-          package: ./client
+          package: .
           
