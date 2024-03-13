@@ -27,8 +27,7 @@ jobs:
 
       - name: Publish to folder
         run:
-          msbuild 'server\dotnet-server.sln' /nologo /verbosity:m /t:Build /t:pipelinePreDeployCopyAllFilesToOneFolder /p:_PackageTempDir="\published\"
-
+          msbuild 'server\dotnet-server.sln' /nologo /verbosity:m /t:Build /p:_PackageTempDir="\published\"
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
