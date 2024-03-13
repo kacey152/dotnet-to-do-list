@@ -26,9 +26,8 @@ jobs:
         run: nuget restore 'server\dotnet-server.sln' 
 
       - name: Publish to folder
-        run: |
-          cd server
-          msbuild /nologo /verbosity:m /t:Build /t:pipelinePreDeployCopyAllFilesToOneFolder /p:_PackageTempDir="\published\"
+        run:
+          msbuild 'server\dotnet-server.sln' /nologo /verbosity:m /t:Build /t:pipelinePreDeployCopyAllFilesToOneFolder /p:_PackageTempDir="\published\"
 
 
       - name: Upload artifact for deployment job
