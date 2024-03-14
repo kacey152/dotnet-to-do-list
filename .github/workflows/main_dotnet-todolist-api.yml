@@ -33,7 +33,7 @@ jobs:
           msbuild 'dotnet-server.sln' /nologo /verbosity:m /t:Build /p:_PackageTempDir="\published\"
       - name: Inspect published directory
         run: ls -al published 
-        
+        shell: bash
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
         with:
