@@ -32,13 +32,15 @@ jobs:
           cd server
           msbuild 'dotnet-server.sln' /nologo /verbosity:m /t:Build /p:_PackageTempDir="\published\"
       - name: Inspect published directory
-        run: ls -al published 
+        run: |
+          cd server
+          ls -al published 
         shell: bash
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
         with:
           name: ASP-app
-          path: '/published/**'
+          path: 'server/published/**'
 
   deploy:
     runs-on: windows-latest
