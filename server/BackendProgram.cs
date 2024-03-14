@@ -10,7 +10,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowSpecificOrigins",
         policy =>
         {
-            policy.WithOrigins("http://localhost:5217")
+            policy.WithOrigins("http://dotnet-todolist.azurewebsites.net/")
             .AllowAnyHeader()
             .AllowAnyMethod();
         });
