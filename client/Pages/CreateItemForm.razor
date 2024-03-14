@@ -62,7 +62,7 @@
 
     private static HttpClient sharedClient = new()
         {
-            BaseAddress = new Uri("dotnet-todolist-api.azurewebsites.net"),
+            BaseAddress = new Uri("https://dotnet-todolist-api.azurewebsites.net"),
         };
 
     static async Task PostAsync(NewItemModel newItemModel, HttpClient httpClient)
