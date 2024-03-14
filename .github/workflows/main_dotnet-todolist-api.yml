@@ -33,7 +33,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: ASP-app
-          path: 'published/**'
+          path: 'server/published/**'
 
       - name: List contents of the published directory
         run: ls -al published
