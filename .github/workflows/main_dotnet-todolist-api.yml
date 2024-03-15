@@ -24,7 +24,7 @@ jobs:
 
       - name: Build with dotnet
         working-directory: ./server
-        run: dotnet build to-do-list.csproj --configuration Release
+        run: dotnet build server.csproj --configuration Release
         
       - name: dotnet publish
         working-directory: ./server
