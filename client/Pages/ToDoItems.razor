@@ -11,7 +11,6 @@
         {
             @if (item.isEditing && item.id != null)
             {
-
                 <EditForm Model="@item" OnValidSubmit="()=> Submit(item)"
                     class="row col-sm-8 justify-content-center mt-2 border rounded">
                     <div class="col-sm-8 p-3">
@@ -194,6 +193,5 @@
 
         var jsonResponse = await response.Content.ReadAsStringAsync();
         Console.WriteLine($"{jsonResponse}\n");
-        Console.WriteLine("hi");
     }
 }
