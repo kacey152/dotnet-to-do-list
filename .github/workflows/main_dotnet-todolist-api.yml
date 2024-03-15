@@ -24,11 +24,11 @@ jobs:
 
       - name: Build with dotnet
         working-directory: ./server
-        run: dotnet build --configuration Release
+        run: dotnet build to-do-list.csproj --configuration Release
         
       - name: dotnet publish
         working-directory: ./server
-        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
+        run: dotnet publish to-do-list.csproj -c Release -o ${{env.DOTNET_ROOT}}/myapp
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
